@@ -1,0 +1,22 @@
+import React from "react";
+import Link from "./Link";
+
+const NavHeader: React.FC = () => {
+    return (
+        <div className="ui secondary pointing menu">
+            <Link className="item" href="/">
+                Accordion
+            </Link>
+            <Link className="item" href="/list">
+                Search
+            </Link>
+            <Link className="item" href="/dropdown">
+                Dropdown
+            </Link>
+            <Link className="item" href="/translate">
+                Translate
+            </Link>
+        </div>
+    )
+}
+export default NavHeader;

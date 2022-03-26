@@ -3,7 +3,16 @@ import axios from "axios";
 
 const Search: React.FC = () => {
     const [term, setTerm] = useState<string>('programming')
+    const [debouncedTerm, setDebouncedTerm] = useState<string>(term);
     const [results, setResults] = useState<{ title: string; snippet: string; pageid: number }[]>([])
+    useEffect(() => {
+        const timerId = setTimeout(() => {
+            setDebouncedTerm(term)
+        }, 1000)
+        return () => {
+            clearTimeout(timerId);
+        }
+    }, [term])
     useEffect(() => {
         const search = async () => {
             const {data} = await axios.get('https://en.wikipedia.org/w/api.php', {
@@ -12,30 +21,13 @@ const Search: React.FC = () => {
                     list: 'search',
                     origin: '*',
                     format: 'json',
-                    srsearch: term
+                    srsearch: debouncedTerm
                 }
-            });
-            setResults(data.query.search)
+            })
+            setResults(data.query.search);
         }
-        if (term && !results.length) {
-            console.log('111')
-            search();
-
-        } else {
-            console.log('222')
-            const timeoutId = setTimeout(() => {
-                if (term) {
-                    search();
-                }
-            }, 2000);
-            return () => {
-                console.log('CLEANUPPPP')
-                clearTimeout(timeoutId)
-            }
-
-        }
-
-    }, [term, results.length]);
+        search();
+    }, [debouncedTerm]);
     const displayedResults = results.map(result => {
         return (
             <div className="item" key={result.pageid}>
